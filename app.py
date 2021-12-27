@@ -1,5 +1,6 @@
 import socket
 
+from datetime import datetime
 from flask import Flask
 
 app = Flask(__name__)
@@ -8,7 +9,8 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     hostname = socket.gethostname()
-    return "<html><body><h1>Hello, This is a server, {}</h1></body></html>".format(hostname)
+    isotime = datetime.now().isoformat()
+    return "<html><body><h1>Hello, This is a server, {} ({})</h1></body></html>".format(hostname, isotime)
 
 
 if __name__ == "__main__":
