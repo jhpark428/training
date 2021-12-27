@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 
 @app.route("/")
+@app.route("/training")
 def index():
     hostname = socket.gethostname()
     isotime = datetime.now().isoformat()
