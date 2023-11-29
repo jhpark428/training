@@ -1,19 +1,31 @@
+import logging
 import socket
 
 from datetime import datetime
-from flask import Flask
+from flask import Flask, make_response
+from flask_restx import Api, Resource, reqparse
 
 app = Flask(__name__)
+app.config["DEBUG"] = True
+app.logger.setLevel(logging.DEBUG)
+api = Api(app, version="1.0", title="API Documentation", description="Swagger UI", doc="/api-docs")
+ns_test = api.namespace("test", description="Retrieve API")
 
+@ns_test.route("/")
+@ns_test.produces(["text/html"])
+class Test(Resource):
+    def get(self):
+        hostname = socket.gethostname()
+        isotime = datetime.now().isoformat()
+        body = "<html><body><h1>Hello, This is a server, {} ({})</h1></body></html>".format(hostname, isotime)
+        
+        resp = make_response(body)
+        return resp
 
-@app.route("/")
-@app.route("/training")
-def index():
-    hostname = socket.gethostname()
-    isotime = datetime.now().isoformat()
-    return "<html><body><h1>Hello, This is a server, {} ({})</h1></body></html>".format(hostname, isotime)
+@ns_test.route("/message")
+class TestMessage(Resource):
+    def get(self):
+        body = "<h1>Returns a message</h1>"
 
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=True)
-
+        resp = make_response(body)
+        return resp
